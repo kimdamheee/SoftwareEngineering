@@ -1,0 +1,120 @@
+.notice-container {
+  padding: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 120px);
+}
+
+.notice-header-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #000000;
+  margin: 0 0 20px 4px;
+  text-align: left;
+}
+
+.filter-tab-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.filter-tab-btn {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: none;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.filter-tab-btn.active {
+  background-color: #1a73e8;
+  color: #ffffff;
+}
+
+.notice-list-wrapper {
+  width: 100%;
+}
+
+.no-notice-box {
+  padding: 40px;
+  text-align: center;
+  border: 1px dashed #cccccc;
+  border-radius: 12px;
+  color: #888888;
+  background-color: #ffffff;
+  font-size: 14px;
+}
+
+.notice-card-item {
+  display: flex;
+  position: relative;
+  border-radius: 12px;
+  background-color: #ffffff;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid #eaeaea;
+}
+
+.notice-card-item.unread-bg {
+  background-color: #fff8f8;
+}
+
+.notice-card-item.warning-bg {
+  background-color: #fffdf0;
+}
+
+.left-indicator-bar {
+  width: 6px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.notice-card-content {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.notice-card-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notice-card-title {
+  font-size: 15px;
+  color: #111111;
+}
+
+.blue-unread-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #1a73e8;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.notice-card-message {
+  font-size: 13.5px;
+  color: #444444;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.notice-card-date {
+  font-size: 11px;
+  color: #999999;
+  margin-top: 2px;
+}

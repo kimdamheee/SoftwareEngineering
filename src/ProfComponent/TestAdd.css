@@ -1,0 +1,173 @@
+.test-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.test-modal-container {
+  width: 100%;
+  max-width: 520px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: testModalShow 0.25s ease-out;
+}
+
+@keyframes testModalShow {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.test-modal-header {
+  background-color: #ff5722;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.test-modal-header h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.test-close-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.test-modal-form {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.test-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.test-form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.test-required {
+  color: #ff5722;
+  margin-left: 2px;
+}
+
+.test-form-group input[type="text"],
+.test-form-group input[type="date"],
+.test-form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #333333;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.time-picker-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.time-select-box {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+}
+
+.time-select-box select {
+  flex: 1;
+  padding: 12px 8px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #333333;
+  outline: none;
+  background-color: #ffffff;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.test-form-group input:focus,
+.test-form-group textarea:focus,
+.time-select-box select:focus {
+  border-color: #ff5722;
+}
+
+.time-wave {
+  font-size: 18px;
+  font-weight: bold;
+  color: #555555;
+  padding: 0 4px;
+}
+
+.test-form-group textarea {
+  height: 100px;
+  resize: none;
+  font-family: inherit;
+}
+
+.test-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.test-cancel-btn,
+.test-save-btn {
+  flex: 1;
+  padding: 14px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.test-cancel-btn {
+  background-color: #f1f3f5;
+  color: #495057;
+}
+
+.test-save-btn {
+  background-color: #f39c12;
+  color: #ffffff;
+}
+
+.test-cancel-btn:hover,
+.test-save-btn:hover {
+  opacity: 0.9;
+}
