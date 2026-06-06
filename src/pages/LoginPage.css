@@ -11,7 +11,6 @@ body {
   background-color: #ffffff;
 }
 
-/* 상단 회색 바(.window-header, .window-dots, .window-address-bar) 스타일 삭제됨 */
 
 .window-content {
   flex: 1;
@@ -33,12 +32,12 @@ body {
   font-size: 4.5rem;
   font-weight: 800;
   color: #1a1a1a;
-  margin: 0 0 3rem 0; /* 제목과 부제목 사이 간격 넓힘 */
+  margin: 0 0 3rem 0; 
   letter-spacing: -1px;
 }
 
 .login-subtitle {
-  font-size: 1.5rem; /* 글자 크기 살짝 작게 수정 */
+  font-size: 1.5rem; 
   color: #777777;
   margin: 0 0 4rem 0;
   font-weight: 500;
@@ -91,10 +90,6 @@ body {
   font-size: 1rem;
   opacity: 0.9;
 }
-
-/* ==========================================
-   새로 추가된 입력 폼(Form) 관련 스타일
-========================================== */
 
 .form-container {
   width: 100%;

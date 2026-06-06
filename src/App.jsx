@@ -66,6 +66,8 @@ function App() {
 
   const handleLogout = () => {
     sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    localStorage.removeItem('global_notifications');
+    localStorage.removeItem('read_notifications');
     setUser(null);
     setPage('main');
   };
