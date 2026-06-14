@@ -62,6 +62,8 @@ function Stunotice({ user }) {
     setNotifications(prev =>
       prev.map(notif => notif.id === id ? { ...notif, isRead: true } : notif)
     );
+
+    window.dispatchEvent(new Event('global_notifications_updated'));
   };
 
   const filteredNotifications = notifications.filter((notif) => {
@@ -70,34 +72,31 @@ function Stunotice({ user }) {
     return true; 
   });
 
-  return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h2>알림</h2>
+  const unreadCount = notifications.filter((notif) => !notif.isRead).length;
 
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-        <button 
-          onClick={() => setActiveTab('all')}
-          style={activeTab === 'all' ? activeTabStyle : inactiveTabStyle}
-        >
-          전체
-        </button>
-        <button 
-          onClick={() => setActiveTab('unread')}
-          style={activeTab === 'unread' ? activeTabStyle : inactiveTabStyle}
-        >
-          읽지 않음
-        </button>
-        <button 
-          onClick={() => setActiveTab('read')}
-          style={activeTab === 'read' ? activeTabStyle : inactiveTabStyle}
-        >
-          읽음
-        </button>
+  const renderTabButton = (tabKey, label, count) => (
+    <button
+      onClick={() => setActiveTab(tabKey)}
+      className={activeTab === tabKey ? 'filter-tab-btn active' : 'filter-tab-btn'}
+    >
+      <span>{label}</span>
+      {count > 0 && <span className="filter-tab-badge">{count}</span>}
+    </button>
+  );
+
+  return (
+    <div className="notice-container">
+      <h2 className="notice-header-title">알림</h2>
+
+      <div className="filter-tab-bar">
+        {renderTabButton('all', '전체', unreadCount)}
+        {renderTabButton('unread', '읽지 않음', unreadCount)}
+        {renderTabButton('read', '읽음', 0)}
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <div className="notice-list-wrapper">
         {filteredNotifications.length === 0 ? (
-          <div style={{ textAlign: 'center', color: '#888', marginTop: '5px' }}>
+          <div className="no-notice-box">
             🔔 새로운 알림이 없습니다.
           </div>
         ) : (
@@ -105,26 +104,18 @@ function Stunotice({ user }) {
             <div 
               key={notif.id} 
               onClick={() => handleNotificationClick(notif.id)}
-              style={{
-                border: '1px solid #eee',
-                borderRadius: '8px',
-                padding: '15px',
-                backgroundColor: notif.isRead ? '#fff' : '#fff5f5', 
-                position: 'relative',
-                cursor: 'pointer',
-                transition: 'background-color 0.2s'
-              }}
+              className={`notice-card-item ${notif.isRead ? '' : 'unread-bg'}`}
             >
-              <h4 style={{ margin: '0 0 5px 0' }}>{notif.title}</h4>
-              <p style={{ margin: '0 0 10px 0', color: '#555', fontSize: '14px', lineHeight: '1.4' }}>{notif.content}</p>
-              <span style={{ fontSize: '12px', color: '#999' }}>{notif.time}</span>
+              <div className="left-indicator-bar" style={{ backgroundColor: notif.isRead ? '#cbd5e1' : '#1a73e8' }} />
+              <div className="notice-card-content">
+                <div className="notice-card-top">
+                  <h4 className="notice-card-title">{notif.title}</h4>
+                  {!notif.isRead && <span className="blue-unread-dot" />}
+                </div>
+                <p className="notice-card-message">{notif.content}</p>
+                <span className="notice-card-date">{notif.time}</span>
+              </div>
               
-              {!notif.isRead && (
-                <span style={{
-                  position: 'absolute', top: '15px', right: '15px',
-                  width: '8px', height: '8px', backgroundColor: '#007bff', borderRadius: '50%'
-                }} />
-              )}
             </div>
           ))
         )}
@@ -132,15 +123,5 @@ function Stunotice({ user }) {
     </div>
   );
 }
-
-const activeTabStyle = {
-  flex: 1, padding: '10px', border: 'none', borderRadius: '5px',
-  backgroundColor: '#007bff', color: '#fff', fontWeight: 'bold', cursor: 'pointer'
-};
-
-const inactiveTabStyle = {
-  flex: 1, padding: '10px', border: 'none', borderRadius: '5px',
-  backgroundColor: '#e0e0e0', color: '#333', cursor: 'pointer'
-};
 
 export default Stunotice;

@@ -1,38 +1,73 @@
 .prof-main-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100svh;
+  width: 100%;
+  max-width: 1126px;
+  margin: 0 auto;
   background-color: #fcfcfc;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  box-sizing: border-box;
 }
 
 .prof-content-area {
   flex: 1;
-  padding-bottom: 70px;
+  padding-bottom: 92px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .prof-calendar-view {
-  padding: 20px 16px;
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
+  padding: 32px 32px 24px;
   text-align: center;
+  box-sizing: border-box;
+}
+
+.prof-calendar-title-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+  margin-bottom: 24px;
 }
 
 .prof-calendar-year-month {
-  font-size: 32px;
+  flex: 1;
+  font-size: 2.6rem;
   font-weight: 800;
   color: #222222;
-  margin-bottom: 20px;
+  margin: 0;
+  text-align: center;
+}
+
+.prof-calendar-nav-btn {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #ffd8b5;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff, #fff6ee);
+  color: #ff9f43;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(255, 159, 67, 0.08);
+}
+
+.prof-calendar-nav-btn:hover {
+  background: #fff1e2;
 }
 
 .add-exam-btn {
   width: 100%;
-  padding: 14px 0;
+  padding: 16px 0;
   background-color: #ff9f43;
   color: #ffffff;
   border: none;
-  border-radius: 20px;
-  font-size: 18px;
+  border-radius: 16px;
+  font-size: 17px;
   font-weight: bold;
   cursor: pointer;
   margin-bottom: 24px;
@@ -42,8 +77,8 @@
 .prof-calendar-box {
   background-color: #ffffff;
   border: 1px solid #dddddd;
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
@@ -94,9 +129,10 @@
 .prof-bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 1126px);
+  height: 72px;
   background-color: #ffffff;
   display: flex;
   border-top: 1px solid #eeeeee;
@@ -136,8 +172,8 @@
 
 /* 교수 프로필 뷰 */
 .prof-profile-view {
-  padding: 20px;
-  max-width: 500px;
+  padding: 24px 32px 32px;
+  max-width: 960px;
   margin: 0 auto;
 }
 
@@ -208,4 +244,27 @@
 
 .fc-event {
   cursor: pointer !important;
+}
+
+@media (max-width: 1024px) {
+  .prof-calendar-title-bar {
+    gap: 10px;
+  }
+
+  .prof-calendar-view {
+    padding: 20px 16px 24px;
+  }
+
+  .prof-calendar-year-month {
+    font-size: 2.2rem;
+  }
+
+  .prof-calendar-nav-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .prof-profile-view {
+    padding: 20px;
+  }
 }

@@ -9,12 +9,13 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 24px;
 }
 
 .modal-container {
   background: #fff;
   width: 90%;
-  max-width: 450px;
+  max-width: 980px;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -51,13 +52,21 @@
 
 .modal-form {
   padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
   max-height: 70vh;
   overflow-y: auto;
 }
 
 .form-group {
-  margin-bottom: 16px;
   text-align: left;
+}
+
+.form-group.time-picker-group,
+.form-group:nth-of-type(5),
+.form-group:nth-of-type(6) {
+  grid-column: 1 / -1;
 }
 
 .form-group label {
@@ -92,6 +101,7 @@
   display: flex;
   gap: 12px;
   margin-top: 24px;
+  grid-column: 1 / -1;
 }
 
 .cancel-btn, .save-btn {
@@ -203,4 +213,20 @@
   background-color: #f1f5f9;
   color: #2563eb;
   font-weight: bold;
+}
+
+@media (max-width: 900px) {
+  .modal-container {
+    max-width: 100%;
+  }
+
+  .modal-form {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group.time-picker-group,
+  .form-group:nth-of-type(5),
+  .form-group:nth-of-type(6) {
+    grid-column: auto;
+  }
 }

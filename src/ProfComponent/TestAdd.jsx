@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './TestAdd.css';
 
-function TestAdd({ isOpen, onClose, onSave }) {
+const DEFAULT_FORM_DATA = {
+  subject: '',
+  professor: '',
+  date: '',
+  location: '',
+  range: ''
+};
+
+function TestAdd({ isOpen, mode = 'create', initialData, onClose, onSave, onDelete }) {
   const [formData, setFormData] = useState({
     subject: '',
     professor: '',
@@ -12,6 +20,36 @@ function TestAdd({ isOpen, onClose, onSave }) {
 
   const [startTime, setStartTime] = useState({ hour: '09', minute: '00' });
   const [endTime, setEndTime] = useState({ hour: '10', minute: '00' });
+  const [showPastDateWarning, setShowPastDateWarning] = useState(false);
+  const [pendingSubmission, setPendingSubmission] = useState(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setShowPastDateWarning(false);
+    setPendingSubmission(null);
+
+    if (!initialData) {
+      setFormData(DEFAULT_FORM_DATA);
+      setStartTime({ hour: '09', minute: '00' });
+      setEndTime({ hour: '10', minute: '00' });
+      return;
+    }
+
+    const [startPart, endPart] = (initialData.time || '09:00-10:00').split('-');
+    const [startHour, startMinute] = (startPart || '09:00').split(':');
+    const [endHour, endMinute] = (endPart || '10:00').split(':');
+
+    setFormData({
+      subject: initialData.title || '',
+      professor: initialData.professor || '',
+      date: initialData.date || '',
+      location: initialData.location || '',
+      range: initialData.range || ''
+    });
+    setStartTime({ hour: startHour || '09', minute: startMinute || '00' });
+    setEndTime({ hour: endHour || '10', minute: endMinute || '00' });
+  }, [initialData, isOpen]);
 
   if (!isOpen) return null;
 
@@ -21,6 +59,38 @@ function TestAdd({ isOpen, onClose, onSave }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const isPastDate = (dateValue) => {
+    if (!dateValue) return false;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const selectedDate = new Date(`${dateValue}T00:00:00`);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    return selectedDate < today;
+  };
+
+  const buildSubmission = () => {
+    const formattedTime = `${startTime.hour}:${startTime.minute}-${endTime.hour}:${endTime.minute}`;
+
+    return {
+      id: initialData?.id,
+      title: formData.subject,
+      date: formData.date,
+      professor: formData.professor,
+      location: formData.location,
+      range: formData.range,
+      time: formattedTime,
+      type: mode === 'edit' ? 'update' : 'create'
+    };
+  };
+
+  const submitSchedule = (submission) => {
+    onSave(submission);
+    onClose();
   };
 
   const handleSubmit = (e) => {
@@ -39,23 +109,33 @@ function TestAdd({ isOpen, onClose, onSave }) {
       return;
     }
 
-    const formattedTime = `${startTime.hour}:${startTime.minute}-${endTime.hour}:${endTime.minute}`;
-    const uniqueId = `event-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const submission = buildSubmission();
 
-    onSave({
-      id: uniqueId,
-      title: formData.subject,
-      date: formData.date,
-      professor: formData.professor,
-      location: formData.location,
-      range: formData.range,
-      time: formattedTime
-    });
+    if (isPastDate(formData.date)) {
+      setPendingSubmission(submission);
+      setShowPastDateWarning(true);
+      return;
+    }
 
-    setFormData({ subject: '', professor: '', date: '', location: '', range: '' });
-    setStartTime({ hour: '09', minute: '00' });
-    setEndTime({ hour: '10', minute: '00' });
-    onClose();
+    submitSchedule(submission);
+  };
+
+  const handleDelete = () => {
+    if (!initialData || !onDelete) return;
+    onDelete(initialData);
+  };
+
+  const handleConfirmPastDate = () => {
+    if (!pendingSubmission) return;
+
+    setShowPastDateWarning(false);
+    submitSchedule(pendingSubmission);
+    setPendingSubmission(null);
+  };
+
+  const handleCancelPastDate = () => {
+    setShowPastDateWarning(false);
+    setPendingSubmission(null);
   };
 
   return (
@@ -63,7 +143,7 @@ function TestAdd({ isOpen, onClose, onSave }) {
       <div className="test-modal-container">
         
         <div className="test-modal-header">
-          <h2>시험 등록</h2>
+          <h2>{mode === 'edit' ? '시험 수정' : '시험 등록'}</h2>
           <button className="test-close-btn" onClick={onClose}>&times;</button>
         </div>
 
@@ -132,10 +212,30 @@ function TestAdd({ isOpen, onClose, onSave }) {
           </div>
 
           <div className="test-modal-actions">
+            {mode === 'edit' && (
+              <button type="button" className="test-delete-btn" onClick={handleDelete}>삭제</button>
+            )}
             <button type="button" className="test-cancel-btn" onClick={onClose}>취소</button>
-            <button type="submit" className="test-save-btn">저장</button>
+            <button type="submit" className="test-save-btn">{mode === 'edit' ? '수정 저장' : '저장'}</button>
           </div>
         </form>
+
+        {showPastDateWarning && (
+          <div className="test-warning-overlay" role="dialog" aria-modal="true" aria-labelledby="past-date-warning-title">
+            <div className="test-warning-panel">
+              <h3 id="past-date-warning-title">이미 지난 날짜입니다</h3>
+              <p>선택한 날짜는 오늘보다 이전입니다. 그래도 등록하시겠습니까?</p>
+              <div className="test-warning-actions">
+                <button type="button" className="test-warning-cancel-btn" onClick={handleCancelPastDate}>
+                  취소
+                </button>
+                <button type="button" className="test-warning-confirm-btn" onClick={handleConfirmPastDate}>
+                  확인
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

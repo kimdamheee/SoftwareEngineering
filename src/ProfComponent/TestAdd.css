@@ -9,12 +9,13 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 16px;
+  padding: 24px;
 }
 
 .test-modal-container {
+  position: relative;
   width: 100%;
-  max-width: 520px;
+  max-width: 980px;
   background-color: #ffffff;
   border-radius: 16px;
   overflow: hidden;
@@ -54,9 +55,9 @@
 
 .test-modal-form {
   padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 20px;
   max-height: 75vh;
   overflow-y: auto;
 }
@@ -66,6 +67,12 @@
   flex-direction: column;
   gap: 8px;
   text-align: left;
+}
+
+.test-form-group.time-picker-group,
+.test-form-group:nth-of-type(5),
+.test-form-group:nth-of-type(6) {
+  grid-column: 1 / -1;
 }
 
 .test-form-group label {
@@ -143,8 +150,10 @@
   display: flex;
   gap: 12px;
   margin-top: 10px;
+  grid-column: 1 / -1;
 }
 
+.test-delete-btn,
 .test-cancel-btn,
 .test-save-btn {
   flex: 1;
@@ -162,12 +171,100 @@
   color: #495057;
 }
 
+.test-delete-btn {
+  background-color: #ffe3e3;
+  color: #c92a2a;
+}
+
 .test-save-btn {
   background-color: #f39c12;
   color: #ffffff;
 }
 
 .test-cancel-btn:hover,
+.test-delete-btn:hover,
 .test-save-btn:hover {
   opacity: 0.9;
+}
+
+.test-warning-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 20;
+}
+
+.test-warning-panel {
+  width: min(100%, 440px);
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  padding: 24px;
+  text-align: left;
+}
+
+.test-warning-panel h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  color: #b91c1c;
+}
+
+.test-warning-panel p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #374151;
+}
+
+.test-warning-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.test-warning-cancel-btn,
+.test-warning-confirm-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 14px 0;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.test-warning-cancel-btn {
+  background: #fef2f2;
+  color: #dc2626;
+  box-shadow: inset 0 0 0 1px #fecaca;
+}
+
+.test-warning-confirm-btn {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .test-modal-container {
+    max-width: 100%;
+  }
+
+  .test-modal-form {
+    grid-template-columns: 1fr;
+  }
+
+  .test-form-group.time-picker-group,
+  .test-form-group:nth-of-type(5),
+  .test-form-group:nth-of-type(6) {
+    grid-column: auto;
+  }
+
+  .test-warning-actions {
+    grid-template-columns: 1fr;
+  }
 }

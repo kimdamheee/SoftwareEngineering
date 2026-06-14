@@ -9,6 +9,7 @@ function ProfCalendar({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('calendar');
   const [calendarTitle, setCalendarTitle] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   
   const [events, setEvents] = useState(() => {
     const savedNotifications = localStorage.getItem('global_notifications');
@@ -29,9 +30,34 @@ function ProfCalendar({ user, onLogout }) {
     setCalendarTitle(dateInfo.view.title);
   };
 
+  const handlePrevMonth = () => {
+    calendarRef.current?.getApi()?.prev();
+  };
+
+  const handleNextMonth = () => {
+    calendarRef.current?.getApi()?.next();
+  };
+
   const handleSaveSchedule = (newTest) => {
+    if (newTest.id) {
+      setEvents(prev => prev.map((event) => (
+        String(event.id) === String(newTest.id)
+          ? {
+              ...event,
+              ...newTest,
+              type: 'update',
+              backgroundColor: '#007bff',
+              borderColor: '#007bff',
+              textColor: '#ffffff'
+            }
+          : event
+      )));
+      return;
+    }
+
     const styledEvent = {
       ...newTest,
+      id: newTest.id || `event-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       type: 'create',
       backgroundColor: '#007bff',
       borderColor: '#007bff',
@@ -41,63 +67,45 @@ function ProfCalendar({ user, onLogout }) {
     setEvents(prev => [...prev, styledEvent]);
   };
 
+  const handleDeleteSchedule = (eventToDelete) => {
+    if (!eventToDelete) return;
+
+    if (!window.confirm(`정말로 ${eventToDelete.title} 시험 일정을 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    setEvents(prev => prev.map((event) => (
+      String(event.id) === String(eventToDelete.id)
+        ? { ...event, type: 'delete' }
+        : event
+    )));
+
+    const readStatus = localStorage.getItem('read_notifications') ? JSON.parse(localStorage.getItem('read_notifications')) : {};
+    delete readStatus[eventToDelete.id];
+    localStorage.setItem('read_notifications', JSON.stringify(readStatus));
+
+    setIsFormOpen(false);
+    setSelectedEvent(null);
+  };
+
   const handleEventClick = (clickInfo) => {
     const eventId = clickInfo.event.id;
     const currentEvent = events.find(e => String(e.id) === String(eventId));
     
     if (!currentEvent) return;
 
-    const action = prompt("원하는 작업을 선택하세요.\n(1: 일정 수정, 2: 일정 삭제, 취소: 취소)", "1");
-    
-    if (action === "1") {
-      const newDate = prompt("새로운 시험 날짜를 입력하세요 (YYYY-MM-DD)", currentEvent.date);
-      if (!newDate) return;
-      const newLocation = prompt("새로운 시험 장소를 입력하세요", currentEvent.location);
-      if (!newLocation) return;
-      const newRange = prompt("새로운 시험 범위를 입력하세요", currentEvent.range);
-      if (!newRange) return;
+    setSelectedEvent(currentEvent);
+    setIsFormOpen(true);
+  };
 
-      const updatedEvents = events.map(e => {
-        if (String(e.id) === String(eventId)) {
-          return {
-            ...e,
-            date: newDate,
-            location: newLocation,
-            range: newRange,
-            type: 'update'
-          };
-        }
-        return e;
-      });
+  const handleOpenCreateForm = () => {
+    setSelectedEvent(null);
+    setIsFormOpen(true);
+  };
 
-      const readStatus = localStorage.getItem('read_notifications') ? JSON.parse(localStorage.getItem('read_notifications')) : {};
-      delete readStatus[eventId];
-      localStorage.setItem('read_notifications', JSON.stringify(readStatus));
-
-      setEvents(updatedEvents);
-      alert(`${currentEvent.title} 시험 일정이 수정되었습니다.`);
-    } 
-    
-    else if (action === "2") {
-      if (confirm(`정말로 ${currentEvent.title} 시험 일정을 삭제하시겠습니까?`)) {
-        const updatedEvents = events.map(e => {
-        if (String(e.id) === String(eventId)) {
-          return {
-            ...e,
-            type: 'delete'
-          };
-        }
-        return e;
-      });
-
-      const readStatus = localStorage.getItem('read_notifications') ? JSON.parse(localStorage.getItem('read_notifications')) : {};
-      delete readStatus[eventId];
-      localStorage.setItem('read_notifications', JSON.stringify(readStatus));
-
-      setEvents(updatedEvents);
-      alert(`${currentEvent.title} 시험 일정이 삭제되었습니다.`);
-      }
-    }
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setSelectedEvent(null);
   };
 
   return (
@@ -106,9 +114,27 @@ function ProfCalendar({ user, onLogout }) {
         
         {activeTab === 'calendar' && (
           <div className="prof-calendar-view">
-            <h1 className="prof-calendar-year-month">{calendarTitle}</h1>
+            <div className="prof-calendar-title-bar">
+              <button
+                type="button"
+                className="prof-calendar-nav-btn"
+                onClick={handlePrevMonth}
+                aria-label="이전 월"
+              >
+                ‹
+              </button>
+              <h1 className="prof-calendar-year-month">{calendarTitle}</h1>
+              <button
+                type="button"
+                className="prof-calendar-nav-btn"
+                onClick={handleNextMonth}
+                aria-label="다음 월"
+              >
+                ›
+              </button>
+            </div>
             
-            <button className="add-exam-btn" onClick={() => setIsFormOpen(true)}>
+            <button className="add-exam-btn" onClick={handleOpenCreateForm}>
               + 시험 등록
             </button>
             
@@ -168,8 +194,11 @@ function ProfCalendar({ user, onLogout }) {
 
       <TestAdd 
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        mode={selectedEvent ? 'edit' : 'create'}
+        initialData={selectedEvent}
+        onClose={handleCloseForm}
         onSave={handleSaveSchedule}
+        onDelete={handleDeleteSchedule}
       />
     </div>
   );
